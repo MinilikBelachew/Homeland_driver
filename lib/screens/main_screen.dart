@@ -1,3 +1,4 @@
+import 'package:driver/assistant/assistant_methods.dart';
 import 'package:driver/tab_pages/earnings_tab.dart';
 import 'package:driver/tab_pages/home_tab.dart';
 import 'package:driver/tab_pages/profile_tab.dart';
@@ -29,6 +30,7 @@ class _MainScreenState extends State<MainScreen> with SingleTickerProviderStateM
 
   @override
   void initState() {
+
     PushNotificationService pushNotificationService = PushNotificationService();
     pushNotificationService.initialize(context);
     pushNotificationService.getToken();

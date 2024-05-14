@@ -1,30 +1,36 @@
-import "package:flutter/material.dart";
-class ProgressDialog extends StatelessWidget {
-  //ProgressDialog({super.key});
+import 'package:flutter/material.dart';
 
-  String message;
-  ProgressDialog({required this.message});
+class ProgressDialog extends StatelessWidget {
+  final String message;
+
+  const ProgressDialog({required this.message});
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.tealAccent,
-      child: Container(
-        margin: EdgeInsets.all(15),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(6)
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(15),
+    return Center(
+      child: Material(
+        color: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.all(16),
           child: Row(
+            mainAxisSize: MainAxisSize.min, // Center content horizontally
             children: [
-              SizedBox(width: 6,),
-              CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.black),),
-              SizedBox(width: 26,),
-              Text(message,
-              style: TextStyle(color: Colors.black,fontSize: 15),)
+              const SizedBox(width: 10), // Spacing between icon and text
+              CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor), // Use theme color
+              ),
+              const SizedBox(width: 20), // Spacing between icon and text
+              Text(
+                message,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
             ],
           ),
         ),

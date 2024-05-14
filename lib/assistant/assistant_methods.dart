@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:driver/models/history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:driver/assistant/request_assistant.dart';
 import 'package:driver/config_maps.dart';
@@ -113,6 +115,9 @@ static void disabeLiveLocationUpdate()
   }
 
   static void retriveHistoryInfo(context) {
+
+
+
     driverRref.child(currentfirebaseUser!.uid).child("earnings").once().then((
         DatabaseEvent event) {
       if (event.snapshot.value != null) {
@@ -120,7 +125,97 @@ static void disabeLiveLocationUpdate()
         Provider.of<AppData>(context,listen: false).updateEarnings(earnings);
       }
     });
+    driverRref.child(currentfirebaseUser!.uid).child("history").once().then((DatabaseEvent event) {
+      if (event.snapshot.value != null ) {
+        // Cast snapshot.value to Map<dynamic, dynamic>
+        Map<dynamic, dynamic>? keys = event.snapshot.value as Map<dynamic, dynamic>?;
+
+        if (keys != null) {
+          int countJourney = keys.length;
+          Provider.of<AppData>(context, listen: false).updateTripCounter(countJourney);
+
+          List<String> tripHistoryKeys = [];
+          keys.forEach((key, value) {
+            tripHistoryKeys.add(key.toString()); // Convert key to string
+          });
+
+          Provider.of<AppData>(context, listen: false).updateTripKeys(tripHistoryKeys);
+
+          obtainTripRequestHistoryData(context);
+        } else {
+          // Handle the case where the data is not a map
+          print("WARNING: Data in driverRref.child('history') is not a Map");
+        }
+      }
+    });
+
+
+
+
+    //
+    // driverRref.child(currentfirebaseUser!.uid).child("history").once().then((DatabaseEvent event) {
+    //
+    //
+    //   if (event.snapshot.value != null) {
+    //
+    //     Map<dynamic,dynamic> keys=event.snapshot.value;
+    //     int countJourny=keys.length;
+    //     Provider.of<AppData>(context,listen: false).updateTripCounter(countJourny);
+    //
+    //     List<String> tripHistoryKeys=[];
+    //     keys.forEach((key, value) {
+    //       tripHistoryKeys.add(key);
+    //     });
+    //
+    //     Provider.of<AppData>(context,listen: false).updateTripKeys(tripHistoryKeys);
+    //
+    //
+    //
+    //
+    //
+    //   }
+    //
+    // });
   }
+
+
+  static Future<void> obtainTripRequestHistoryData(context) async {
+    // Get tripHistoryKeys safely using null-safe operator
+    final tripHistoryKeys = Provider.of<AppData>(context, listen: false).tripHistoryKeys;
+
+    if (tripHistoryKeys == null) {
+      // Handle the case where keys are null (e.g., log a warning)
+      return;
+    }
+
+    for (final key in tripHistoryKeys) {
+      try {
+        // Use await to handle the asynchronous nature of once()
+        final event = await newRequestRref.child(key).once();
+        final snapshot = event.snapshot; // Access DataSnapshot from DatabaseEvent
+
+        if (snapshot.value != null) {
+          final history = History.fromSnapshot(snapshot);
+          Provider.of<AppData>(context, listen: false).updateHistoryData(history);
+        }
+      } on FirebaseException catch (error) {
+        // Handle potential Firebase errors (optional)
+        print('Error fetching trip request history: $error');
+      }
+    }
+  }
+
+
+
+
+  static String formatTripDate(String date)
+  {
+    DateTime dateTime=DateTime.parse(date);
+    String formattedDate="${DateFormat.MMMd().format(dateTime)},${DateFormat.y().format(dateTime)} - ${DateFormat.jm().format(dateTime)}";
+    return formattedDate;
+  }
+
+
 
 
 

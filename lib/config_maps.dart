@@ -17,3 +17,5 @@ StreamSubscription<Position>? rideStreamSubscription;
 final assetsAudioPlayer=audio_player_notification.AssetsAudioPlayer();
 late Position currentPosition;
 Drivers? driversInformation;
+String title="";
+double startCounter=0.0;

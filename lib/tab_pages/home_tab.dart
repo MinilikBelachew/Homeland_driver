@@ -72,6 +72,73 @@ class _HomeTabPageState extends State<HomeTabPage> {
     getCurrentDriverInfo();
   }
 
+
+  getRatings()
+  {
+    driverRref.child(currentfirebaseUser!.uid).child("ratings").once().then((
+        DatabaseEvent event) {
+      if (event.snapshot.value != null) {
+
+        double ratings=double.parse(event.snapshot.value.toString());
+        setState(() {
+          startCounter=ratings;
+
+        });
+
+        if(startCounter <= 1)
+        {
+          setState(() {
+            title="Very Bad";
+
+          });
+
+          return;
+
+        }
+        if(startCounter <= 2)
+        {
+          setState(() {
+            title="Bad";
+
+          });
+          return;
+
+
+        }
+        if(startCounter <= 3)
+        {
+          setState(() {
+            title="Good";
+
+          });
+          return;
+
+        }
+        if(startCounter <= 4)
+        {
+          setState(() {
+            title="Very Good";
+
+          });
+          return;
+
+        }
+        if(startCounter <= 5)
+        {
+          setState(() {
+            title="Excellent";
+
+          });
+          return;
+
+
+        }
+
+      }
+    });
+
+  }
+
   void getCurrentDriverInfo() async
   {
     currentfirebaseUser = await FirebaseAuth.instance.currentUser;
@@ -91,6 +158,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
      pushNotificationService.getToken();
 
      AssistantMethods.retriveHistoryInfo(context);
+     getRatings();
 
   }
 
@@ -143,6 +211,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
                         driverStatusColor = Colors.red;
                         driverStatusText = "Online Offline";
                         isDriverAvailable = false;
+                        makeDriverOffline();
                       });
                       displayToastMessage("You Are offline now", context);
                     }
@@ -207,6 +276,6 @@ class _HomeTabPageState extends State<HomeTabPage> {
     Geofire.removeLocation(currentfirebaseUser!.uid);
     rideRequestRref.onDisconnect();
     rideRequestRref.remove();
-    //rideRequestRref = null;
+   // rideRequestRref = null;
   }
 }
