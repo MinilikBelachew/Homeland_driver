@@ -13,31 +13,39 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Journey History"),
-        backgroundColor: Colors.cyan,
-        leading: IconButton(
-          onPressed: ()
-          {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.keyboard_backspace_rounded),
-        ),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+          'Journey History',
+          style: TextStyle(
+          fontSize: 18.0, // Adjust font size as needed
+          fontWeight: FontWeight.w500, // Semi-bold for emphasis
       ),
-
-      body:ListView.separated(
-          padding: EdgeInsets.all(0),
-          itemBuilder: (context,index)
-          {
-            return HistoryItem(history: Provider.of<AppData>(context,listen: false).tripHistoryDataList![index],);
-          },
-          separatorBuilder: (BuildContext context,int index) => Divider(thickness: 3,height: 3,),
-
-          itemCount: Provider.of<AppData>(context,listen: false).tripHistoryDataList!.length,
-      physics: ClampingScrollPhysics(),
-        shrinkWrap: true,
-      )
+          ),
+          backgroundColor: Colors.cyan,
+          leading: IconButton(
+            onPressed: ()
+            {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.keyboard_backspace_rounded),
+          ),
+        ),
+      
+        body:ListView.separated(
+            padding: EdgeInsets.all(0),
+            itemBuilder: (context,index)
+            {
+              return HistoryItem(history: Provider.of<AppData>(context,listen: false).tripHistoryDataList![index],);
+            },
+            separatorBuilder: (BuildContext context,int index) => Divider(thickness: 3,height: 3,),
+      
+            itemCount: Provider.of<AppData>(context,listen: false).tripHistoryDataList!.length,
+        physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+        )
+      ),
     );
   }
 }

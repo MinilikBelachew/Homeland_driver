@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 
 import '../config_maps.dart';
+import '../data_handler/app_data.dart';
 
 class RatingTabPage extends StatefulWidget {
   const RatingTabPage({super.key});
@@ -13,6 +15,8 @@ class RatingTabPage extends StatefulWidget {
 class _RatingTabPageState extends State<RatingTabPage> {
   @override
   Widget build(BuildContext context) {
+    AppData languageProvider = Provider.of<AppData>(context);
+    var language = languageProvider.isEnglishSelected;
     return Scaffold(
       body: Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -30,33 +34,36 @@ class _RatingTabPageState extends State<RatingTabPage> {
               SizedBox(
                 height: 22,
               ),
-              Text("Yours Rating",style: TextStyle(fontSize: 20,fontFamily: "Brand-Bold",color: Colors.blue),),
+              Text(language?
+                "Yours Rating":"የእርስዎ ደረጃ",
+                style: TextStyle(
+                    fontSize: 20, fontFamily: "Brand-Bold", color: Colors.blue),
+              ),
               SizedBox(
                 height: 22,
               ),
-              Divider(height: 2,thickness: 2,),
+              Divider(
+                height: 2,
+                thickness: 2,
+              ),
               SizedBox(
                 height: 16,
               ),
-
-
               SmoothStarRating(
                 rating: startCounter,
                 color: Colors.green,
                 allowHalfRating: true,
                 starCount: 5,
                 size: 45,
-
-
-                         ),
-
-
+              ),
               SizedBox(
                 height: 16,
               ),
-
-              Text(title,style: TextStyle(fontSize: 55,fontFamily: "Signatra",color: Colors.green),),
-
+              Text(
+                title,
+                style: TextStyle(
+                    fontSize: 55, fontFamily: "Signatra", color: Colors.green),
+              ),
               SizedBox(
                 height: 30,
               ),
@@ -65,6 +72,5 @@ class _RatingTabPageState extends State<RatingTabPage> {
         ),
       ),
     );
-
   }
 }

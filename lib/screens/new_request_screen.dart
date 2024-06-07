@@ -10,9 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../assistant/assistant_methods.dart';
 import '../assistant/map_kit_assistant.dart';
+import '../data_handler/app_data.dart';
+import '../tab_pages/earnings_tab.dart';
 import '../widgets/progess_dialog.dart';
 
 class NewRequestScreen extends StatefulWidget {
@@ -34,6 +37,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
       Completer<GoogleMapController>();
 
   late GoogleMapController newRideGoogleMapController;
+
   Set<Marker> markerSet = Set<Marker>();
   Set<Circle> circleSet = Set<Circle>();
   Set<Polyline> polyLineSet = Set<Polyline>();
@@ -124,6 +128,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
   @override
   Widget build(BuildContext context) {
     createIconMarker();
+    AppData languageProvider = Provider.of<AppData>(context,listen: false);
+    var language = languageProvider.isEnglishSelected;
 
     return Scaffold(
       body: Stack(
@@ -149,7 +155,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                   LatLng(currentPosition.latitude, currentPosition.longitude);
               var pickUpLatLng = widget.rideDetails.pickup;
               await getPlaceDirection(currentLatLng, pickUpLatLng!);
-               getLiveLocationUpdates();
+              getLiveLocationUpdates();
             },
           ),
           Positioned(
@@ -186,13 +192,24 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                       height: 6,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        //Text(widget.rideDetails.rider_name!,style: TextStyle(fontFamily: "Brand-Bold",fontSize: 25),),
-                        Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(Icons.phonelink_ring),
+                        Icon(
+                          Icons
+                              .local_shipping_outlined, // Material Icon for dropoff
+                          color: Colors.green, // Green color for icons
+                          size: 24,
                         ),
+                        SizedBox(
+                          width: 18,
+                        ),
+                        Expanded(
+                            child: Container(
+                          child: Text(
+                            widget.rideDetails.package_description!,
+                            style: TextStyle(fontSize: 18),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ))
                       ],
                     ),
                     SizedBox(
@@ -200,10 +217,10 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                     ),
                     Row(
                       children: [
-                        Image.asset(
-                          'images/pickicon.png',
-                          height: 16,
-                          width: 16,
+                        Icon(
+                          Icons.pin_drop_outlined, // Material Icon for dropoff
+                          color: Colors.green, // Green color for icons
+                          size: 24,
                         ),
                         SizedBox(
                           width: 18,
@@ -223,10 +240,10 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                     ),
                     Row(
                       children: [
-                        Image.asset(
-                          'images/desticon1.png',
-                          height: 16,
-                          width: 16,
+                        Icon(
+                          Icons.pin_drop, // Material Icon for dropoff
+                          color: Colors.green, // Green color for icons
+                          size: 24,
                         ),
                         SizedBox(
                           width: 18,
@@ -252,6 +269,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                             status = "arrived";
                             String? rideRequestId =
                                 widget.rideDetails.ride_request_id;
+
                             newRequestRref
                                 .child(rideRequestId!)
                                 .child("status")
@@ -261,10 +279,12 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                             });
 
                             showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) =>
-                                    ProgressDialog(message: "Please Wait"));
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (BuildContext context) => ProgressDialog(
+                                message: language?"Please Wait":"እባክዎን ይጠብቁ",
+                              ),
+                            );
 
                             await getPlaceDirection(widget.rideDetails.pickup!,
                                 widget.rideDetails.dropoff!);
@@ -286,7 +306,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                           }
                         },
                         child: Padding(
-                          padding: EdgeInsets.all(17),
+                          padding: EdgeInsets.all(7),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -304,6 +324,17 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                               )
                             ],
                           ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: Colors.lightBlueAccent,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 14),
+                          elevation: 5,
+                          shadowColor: Colors.black.withOpacity(0.2),
                         ),
                       ),
                     )
@@ -516,6 +547,7 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
             ));
 
     saveEarning(fareAmount);
+
   }
 
   void saveEarning(int fareAmount) {

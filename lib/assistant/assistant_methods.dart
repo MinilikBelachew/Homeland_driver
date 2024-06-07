@@ -82,10 +82,12 @@ class AssistantMethods {
 
   static int caculatePrice(DirectioDetail directioDetail) {
     double timeTraveledFare = (directioDetail.durationValue! / 60) * 0.20;
-    double distanceTraveledFare = (directioDetail.distanceValue! / 1000) * 0.2;
-    double totalPrice = timeTraveledFare + distanceTraveledFare;
+  double distanceTraveledFare = (directioDetail.distanceValue! / 1000) * 0.2;
+
+    double oilPrice = 5.0; // Hardcoded oil price
+    double totalPrice = timeTraveledFare + distanceTraveledFare + oilPrice;
     return totalPrice.truncate();
-  }
+}
 
   // static void getCurrentOnlineUserInfo() async {
   //   firebaseUser = await FirebaseAuth.instance.currentUser;

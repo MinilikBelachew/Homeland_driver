@@ -62,7 +62,7 @@ class PushNotificationService {
   Future<String?> getToken() async {
     String? token = await firebaseMessaging.getToken();
     if (token != null) {
-      print("Push notificagfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgffhgddddddddddddddddddddddddddddddddddddddddddddddddddddddddgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdgfdtion token: $token");
+      print("P: $token");
       // Update token in database or perform other actions
 
       driverRref.child(currentfirebaseUser!.uid).child("token").set(token);
@@ -76,7 +76,7 @@ class PushNotificationService {
   Future<void> retrieveRideRequestInfo(
       String rideRequestId, BuildContext context) async {
     final event = await FirebaseDatabase.instance
-        .reference()
+        .ref()
         .child("Ride Request")
         .child(rideRequestId)
         .once();
@@ -111,6 +111,8 @@ assetsAudioPlayer.play();
         String? dropOffAddress = data["dropoff_address"] as String?;
 
         String? payment_method = data["payment_method"] as String?;
+        String? package_description = data["package_description"] as String?;
+
         String? rider_name=data["name"];
         String? rider_phone=data["phone"];
 
@@ -119,6 +121,7 @@ assetsAudioPlayer.play();
         RideDetails rideDetails = RideDetails();
         rideDetails.ride_request_id = rideRequestId;
         rideDetails.payment_method = payment_method;
+        rideDetails.package_description=package_description;
         rideDetails.pickup_address = pickUpAddress;
         rideDetails.dropoff_address = dropOffAddress;
         rideDetails.pickup =
